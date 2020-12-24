@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.widget.*
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -29,6 +30,9 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var progressBar: ProgressDialog
     lateinit var forgotpassword:TextView
 
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -42,6 +46,7 @@ class RegisterActivity : AppCompatActivity() {
         selectPhotobtn=findViewById(R.id.button)
         progressBar=ProgressDialog(this)
         forgotpassword=findViewById(R.id.ForgotPassword)
+
 
         forgotpassword.setOnClickListener {
             val intent=Intent(this,ForgotPasswordActivity::class.java)
@@ -83,6 +88,8 @@ class RegisterActivity : AppCompatActivity() {
         }
 
     }
+
+
     var selectPhotoUri: Uri?=null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -100,7 +107,12 @@ class RegisterActivity : AppCompatActivity() {
 ////           val bitmapDrawable=BitmapDrawable(bitmap)
 ////            selectPhoto.setBackgroundDrawable(bitmapDrawable)
         }
+
+
     }
+
+
+
 
     private fun registerUser(username:String,email:String,password:String) {
         progressBar.setMessage("Registering User...")
@@ -164,4 +176,5 @@ class RegisterActivity : AppCompatActivity() {
                 Log.d("RegisterActivity","Succesfully saved to database")
             }
     }
+
 }
