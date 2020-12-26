@@ -8,43 +8,40 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.steve.kotlinchat.R
+import com.steve.kotlinchat.databinding.ActivityLoginBinding
 import com.steve.kotlinchat.messages.LatestMessagesActivity
 
 class LoginActivity : AppCompatActivity() {
-
-    lateinit var loginEmail: EditText
-    lateinit var loginPassword: EditText
-    lateinit var loginBtn: Button
+    private lateinit var binding: ActivityLoginBinding
     lateinit var progressBar:ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        loginEmail=findViewById(R.id.loginEmail)
-        loginPassword=findViewById(R.id.loginPassword)
-        loginBtn=findViewById(R.id.loginBtn)
+        binding=DataBindingUtil.setContentView(this,R.layout.activity_login)
+
         progressBar= ProgressDialog(this)
 
-        loginBtn.setOnClickListener {
-            val email = loginEmail.text.toString()
-            val password = loginPassword.text.toString()
+        binding.loginBtn.setOnClickListener {
+            val email = binding.loginEmail.text.toString()
+            val password = binding.loginPassword.text.toString()
 
             if (email.isEmpty()) {
-                loginEmail.error="Enter Email"
+                binding.loginEmail.error="Enter Email"
                 return@setOnClickListener
             }
 
             if (password.isEmpty()){
-                loginPassword.error="Enter Password"
+                binding.loginPassword.error="Enter Password"
                 return@setOnClickListener
 
             }
             loginUser(email,password)
         }
-
 
     }
 

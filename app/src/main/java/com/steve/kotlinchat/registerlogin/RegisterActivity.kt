@@ -10,85 +10,76 @@ import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.widget.*
+import androidx.databinding.DataBindingUtil
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.steve.kotlinchat.R
+import com.steve.kotlinchat.databinding.ActivityRegisterBinding
 import com.steve.kotlinchat.messages.LatestMessagesActivity
 import com.steve.kotlinchat.models.User
+import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.*
 
+
+const val REQUEST_CODE_SIGN_IN = 0
 class RegisterActivity : AppCompatActivity() {
-    lateinit var registerUsername: EditText
-    lateinit var registerEmail: EditText
-    lateinit var registerPassword: EditText
-    lateinit var AlreadyhaveAccount: TextView
-    lateinit var registerBtn: Button
-    lateinit var selectPhoto:ImageView
-    lateinit var selectPhotobtn:Button
-    lateinit var progressBar: ProgressDialog
-    lateinit var forgotpassword:TextView
-
-
-
+   private lateinit var binding: ActivityRegisterBinding
+   lateinit var progressBar:ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
 
-        registerUsername = findViewById(R.id.userName)
-        registerEmail = findViewById(R.id.registerEmail)
-        registerPassword = findViewById(R.id.registerPassword)
-        registerBtn = findViewById(R.id.btnRegister)
-        AlreadyhaveAccount = findViewById(R.id.alreadyHaveAccount)
-        selectPhoto=findViewById(R.id.imageView)
-        selectPhotobtn=findViewById(R.id.button)
-        progressBar=ProgressDialog(this)
-        forgotpassword=findViewById(R.id.ForgotPassword)
+        progressBar= ProgressDialog(this)
+        binding=DataBindingUtil.setContentView(this,R.layout.activity_register)
 
 
-        forgotpassword.setOnClickListener {
+        binding.ForgotPassword.setOnClickListener {
             val intent=Intent(this,ForgotPasswordActivity::class.java)
             startActivity(intent)
         }
-
-        AlreadyhaveAccount.setOnClickListener {
+        binding.alreadyHaveAccount.setOnClickListener {
             val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
         }
-        registerBtn.setOnClickListener {
-            val username = registerUsername.text.toString()
-            val email = registerEmail.text.toString()
-            val password = registerPassword.text.toString()
+        binding.btnRegister.setOnClickListener {
+            val username = binding.userName.text.toString()
+            val email = binding.registerEmail.text.toString()
+            val password = binding.registerPassword.text.toString()
 
             if (username.isEmpty()){
-                registerUsername.error="Enter Username"
+                binding.userName.error="Enter Username"
                 return@setOnClickListener
             }
-
             if (email.isEmpty()) {
                 registerEmail.error="Enter Email"
                 return@setOnClickListener
             }
-
             if (password.isEmpty()){
                 registerPassword.error="Enter Password"
                 return@setOnClickListener
-
             }
 
             registerUser(username,email,password)
         }
 
-        selectPhotobtn.setOnClickListener {
+        binding.buttonImage.setOnClickListener {
             val intent=Intent(Intent.ACTION_GET_CONTENT)
             intent.type="image/*"
             startActivityForResult(intent,0)
         }
 
     }
-
 
     var selectPhotoUri: Uri?=null
 
@@ -99,8 +90,8 @@ class RegisterActivity : AppCompatActivity() {
 //
            selectPhotoUri=data.data
             val bitmap=MediaStore.Images.Media.getBitmap(contentResolver,selectPhotoUri)
-            selectPhoto.setImageBitmap(bitmap)
-            selectPhotobtn.alpha=0f
+            binding.imageView.setImageBitmap(bitmap)
+            binding.buttonImage.alpha=0f
 //
 //             val uri=data.data
 ////           selectPhoto.setImageURI(uri)
@@ -108,11 +99,7 @@ class RegisterActivity : AppCompatActivity() {
 ////            selectPhoto.setBackgroundDrawable(bitmapDrawable)
         }
 
-
     }
-
-
-
 
     private fun registerUser(username:String,email:String,password:String) {
         progressBar.setMessage("Registering User...")
@@ -170,7 +157,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun saveUserToFirebaseData(profileImageUrl: String) {
       val uid=FirebaseAuth.getInstance().uid
       val ref= FirebaseDatabase.getInstance().getReference("/users/$uid")
-        val user= User(uid!!,registerUsername.text.toString(),profileImageUrl)
+        val user= User(uid!!,binding.userName.text.toString(),profileImageUrl)
         ref.setValue(user)
             .addOnSuccessListener {
                 Log.d("RegisterActivity","Succesfully saved to database")

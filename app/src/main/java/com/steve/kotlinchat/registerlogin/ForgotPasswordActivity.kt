@@ -8,32 +8,27 @@ import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.steve.kotlinchat.R
+import com.steve.kotlinchat.databinding.ActivityForgotPasswordBinding
 
 class ForgotPasswordActivity : AppCompatActivity() {
-    lateinit var mResetEmail:EditText
-    lateinit var mResetCode:Button
-
+    private lateinit var binding:ActivityForgotPasswordBinding
     private lateinit var mAuth:FirebaseAuth
-
     lateinit var mProgressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_forgot_password)
-
-        mResetEmail=findViewById(R.id.emailReset)
-        mResetCode=findViewById(R.id.resetPasswordBtn)
+        binding=DataBindingUtil.setContentView(this,R.layout.activity_forgot_password)
 
         mAuth= FirebaseAuth.getInstance()
         mProgressDialog= ProgressDialog(this)
 
-        mResetCode.setOnClickListener {
+        binding.resetPasswordBtn.setOnClickListener {
 
             sendResetCode()
         }
-
 
     }
 
@@ -41,7 +36,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         mProgressDialog.setMessage("Please Wait...")
         mProgressDialog.show()
 
-        val email=mResetEmail.text.toString().trim()
+        val email=binding.emailReset.text.toString().trim()
 
         if (TextUtils.isEmpty(email)){
             mAuth.sendPasswordResetEmail(email)

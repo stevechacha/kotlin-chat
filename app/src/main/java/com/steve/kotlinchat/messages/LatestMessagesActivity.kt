@@ -6,13 +6,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import com.steve.kotlinchat.NewMessageActivity
 import com.steve.kotlinchat.R
+import com.steve.kotlinchat.databinding.ActivityChatLogBinding
+import com.steve.kotlinchat.databinding.ActivityLatestMessagesBinding
 import com.steve.kotlinchat.models.ChatMessage
 import com.steve.kotlinchat.models.User
 import com.steve.kotlinchat.registerlogin.RegisterActivity
@@ -23,18 +27,18 @@ import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.latest_messages_row.view.*
 
 class LatestMessagesActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityLatestMessagesBinding
     companion object{
         var currentUser: User?=null
         val TAG="LatestMessageActivity"
     }
-    lateinit var LatestMessagerecyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_latest_messages)
+       binding=DataBindingUtil.setContentView(this,R.layout.activity_latest_messages)
 
-        LatestMessagerecyclerView=findViewById(R.id.recycler_latest_message)
-        LatestMessagerecyclerView.adapter=adapter
-        LatestMessagerecyclerView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
+//    binding.recyclerLatestMessage.layoutManager=LinearLayoutManager(this)
+    binding.recyclerLatestMessage.adapter=adapter
+    binding.recyclerLatestMessage.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
 
         veryUserLoggedIn()
         fetcurrentUser()

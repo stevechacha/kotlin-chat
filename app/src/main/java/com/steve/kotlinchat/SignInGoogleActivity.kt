@@ -46,7 +46,7 @@ class SignInGoogleActivity : AppCompatActivity() {
                 startActivity(Intent(this@SignInGoogleActivity,LatestMessagesActivity::class.java))
                 finish()
                 return
-//                Toast.makeText(this, "Welcome" + user!!.email, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Welcome" + user!!.email, Toast.LENGTH_SHORT).show()
             } else {
                 // Sign in failed, check response for error code
                 Toast.makeText(

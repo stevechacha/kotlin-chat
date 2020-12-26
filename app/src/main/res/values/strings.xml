@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">KotlinChat</string>
+    <string name="webclient_id">111487805220-i2arrtf2fj6f4jh4idujpedu1pdaeot3.apps.googleusercontent.com</string>
+
 </resources>

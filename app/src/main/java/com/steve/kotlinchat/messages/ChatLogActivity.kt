@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
@@ -15,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import com.steve.kotlinchat.NewMessageActivity
 import com.steve.kotlinchat.R
+import com.steve.kotlinchat.databinding.ActivityChatLogBinding
 import com.steve.kotlinchat.models.ChatMessage
 import com.steve.kotlinchat.models.User
 import com.xwray.groupie.GroupAdapter
@@ -25,29 +27,32 @@ import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_to_row.view.*
 
 class ChatLogActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityChatLogBinding
     companion object{
         val TAG="ChatLog"
     }
-    lateinit var recyclerView_chat: RecyclerView
-    lateinit var btnSendMessage:Button
-    lateinit var textMsg:EditText
+//    lateinit var recyclerView_chat: RecyclerView
+//    lateinit var btnSendMessage:Button
+//    lateinit var textMsg:EditText
 
     val adapter=GroupAdapter<ViewHolder>()
     var toUser:User?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_log)
+
+        binding=DataBindingUtil.setContentView(this,R.layout.activity_chat_log)
 
         toUser=  intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
         supportActionBar?.title=toUser?.username
-
-        btnSendMessage=findViewById(R.id.buttonSend)
-        textMsg=findViewById(R.id.chatEdit)
-        recyclerView_chat=findViewById(R.id.recycler_chat_log)
-        recyclerView_chat.adapter=adapter
+//
+////        btnSendMessage=findViewById(R.id.buttonSend)
+//        textMsg=findViewById(R.id.chatEdit)
+//        recyclerView_chat=findViewById(R.id.recycler_chat_log)
+//        recyclerView_chat.adapter=adapter
 
         listenForMessages()
-        btnSendMessage.setOnClickListener {
+        binding.buttonSend.setOnClickListener {
             Log.d(TAG,"Attempt to send message..")
             performSendMessage()
         }
@@ -72,7 +77,7 @@ class ChatLogActivity : AppCompatActivity() {
                     }
 
                 }
-                recyclerView_chat.scrollToPosition(adapter.itemCount-1)
+                binding.recyclerChatLog.scrollToPosition(adapter.itemCount-1)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
@@ -92,7 +97,7 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     private fun performSendMessage() {
-        val text=textMsg.text.toString()
+        val text=binding.chatEdit.text.toString()
         val fromId=FirebaseAuth.getInstance().uid
         val user=  intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
         val toId=user?.uid
@@ -107,7 +112,7 @@ class ChatLogActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Log.d(TAG,"saved succesfully: ${reference.key}")
                 chatEdit.text.clear()
-                recyclerView_chat.scrollToPosition(adapter.itemCount-1)
+                binding.recyclerChatLog.scrollToPosition(adapter.itemCount-1)
             }
         toReference.setValue(chatMessage)
         val latestMessageRef=FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")

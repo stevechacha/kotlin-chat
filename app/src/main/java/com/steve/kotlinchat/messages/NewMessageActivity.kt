@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
@@ -13,6 +14,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.squareup.picasso.Picasso
+import com.steve.kotlinchat.databinding.ActivityNewMessageBinding
 import com.steve.kotlinchat.messages.ChatLogActivity
 import com.steve.kotlinchat.models.User
 import com.xwray.groupie.GroupAdapter
@@ -24,12 +26,12 @@ class NewMessageActivity : AppCompatActivity() {
         val USER_KEY="USER_KEY"
     }
 
-    lateinit var recyclerView: RecyclerView
+   private lateinit var binding:ActivityNewMessageBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_new_message)
+       binding=DataBindingUtil.setContentView(this,R.layout.activity_new_message)
         supportActionBar?.title="Select User"
-        recyclerView=findViewById(R.id.recycler_new_message)
+
 //        val adapter=GroupAdapter<ViewHolder>()
 ////        adapter.add(UserItem(use))
 ////        adapter.add(UserItem())
@@ -58,7 +60,7 @@ class NewMessageActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 }
-                recyclerView.adapter=adapter
+                binding.recyclerNewMessage.adapter=adapter
 
             }
             override fun onCancelled(error: DatabaseError) {
